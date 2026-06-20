@@ -53,9 +53,55 @@ GapList is an **external web application**, not an in-subreddit app. It aggregat
 - **Scheduling:** Vercel Cron or similar
 - **AI tagging:** OpenAI (category + pain score summaries)
 
+## Local development
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Supabase setup
+
+1. Create a project at [supabase.com](https://supabase.com)
+2. Open **SQL Editor** and run [`supabase/schema.sql`](./supabase/schema.sql)
+3. Copy project URL, anon key, and service role key
+
+### 3. Environment variables
+
+```bash
+cp .env.example .env.local
+```
+
+Fill in Supabase keys and generate a `CRON_SECRET`. `OPENAI_API_KEY` is optional (heuristic tagging is used without it).
+
+### 4. Run locally
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000)
+
+### 5. Trigger first fetch
+
+With the dev server running:
+
+```bash
+npm run fetch
+```
+
+Or call `GET /api/cron/fetch` with header `Authorization: Bearer <CRON_SECRET>`.
+
+### 6. Deploy to Vercel
+
+1. Import the GitHub repo at [vercel.com](https://vercel.com)
+2. Add the same environment variables
+3. Vercel Cron runs `/api/cron/fetch` every 20 minutes (see [`vercel.json`](./vercel.json))
+
 ## Development status
 
-MVP in progress. Building with public `.json` endpoints while Reddit API access is pending approval.
+MVP scaffold complete. Uses public Reddit `.json` endpoints while API access is pending approval.
 
 ## License
 

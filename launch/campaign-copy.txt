@@ -1,0 +1,125 @@
+================================================================================
+GAPLIST LAUNCH PLAYBOOK — copy/paste ready
+Replace YOUR_URL with https://gaplist.vercel.app (or your live domain)
+================================================================================
+
+TRACKING LINKS (use these when you control the URL)
+---------------------------------------------------
+LinkedIn (your post):     YOUR_URL?utm_source=linkedin&utm_medium=organic&utm_campaign=launch
+Reddit (your post):       YOUR_URL?utm_source=reddit&utm_medium=organic&utm_campaign=launch
+Naano (if they allow):    YOUR_URL?utm_source=naano&utm_medium=creator&utm_campaign=launch-v1
+Reddit Ads:               YOUR_URL?utm_source=reddit&utm_medium=paid&utm_campaign=launch-v1
+
+
+================================================================================
+STEP 1 — YOUR LINKEDIN POST (post this yourself first, free)
+================================================================================
+
+I got tired of guessing what startup to build.
+
+So I made a free tool that scans Reddit for posts where founders describe real
+frustrations — invoicing pain, churn, tools that suck, workflows that break.
+
+It's called GapList. You can:
+→ search by keyword or subreddit
+→ save threads worth exploring
+→ build from problems people already talk about
+
+Still beta, but usable today. Would love feedback from builders:
+
+YOUR_URL?utm_source=linkedin&utm_medium=organic&utm_campaign=launch
+
+What's the last problem thread you bookmarked?
+
+
+================================================================================
+STEP 2 — REDDIT POST (r/SideProject or r/indiehackers)
+================================================================================
+
+Title: I built a tool that finds startup ideas from Reddit complaint threads [Beta]
+
+Body:
+
+Hey everyone — I kept seeing "what should I build?" posts while the best signal
+was already in Reddit threads: founders complaining about broken workflows.
+
+So I built GapList (free beta):
+
+- Monitors ~10 startup subreddits for problem-signal posts
+- Search by keyword (e.g. "invoicing", "onboarding") or subreddit
+- Save threads to a shortlist (Solutions tab)
+
+It's read-only — every card links back to the original Reddit post.
+
+Try it: YOUR_URL?utm_source=reddit&utm_medium=organic&utm_campaign=launch
+
+Happy to add subreddits or fix rough edges. What would make this actually useful
+for your idea research?
+
+
+Also post to: r/Entrepreneur, r/startups (check each sub's self-promo rules first)
+
+
+================================================================================
+STEP 3 — NAANO CAMPAIGN BRIEF (after site is live + organic posts done)
+================================================================================
+
+Brand name:     GapList
+Website:        YOUR_URL
+Category:       B2B SaaS / founder tools / indie hackers
+
+One-liner:
+GapList finds real startup problems from Reddit — so founders stop guessing what
+to build.
+
+Description:
+GapList is a free research tool for founders and indie hackers. It scans public
+Reddit posts for problem signals (frustrations, "I wish X existed", workflow pain)
+across startup subreddits. Users search by keyword or subreddit, save promising
+threads, and review them in a shortlist. Read-only — links back to Reddit.
+
+Target audience:
+- Founders, indie hackers, solo builders
+- People looking for startup ideas or validating pain points
+- SaaS builders doing problem discovery
+
+Talking points for creators:
+1. "Stop scrolling Reddit randomly — this collects founder pain in one place"
+2. "I searched [invoicing / CRM / onboarding] and found real complaint threads"
+3. "Save the best threads and build from pain people already expressed"
+4. Free beta, no credit card, works in the browser
+
+Suggested post angle (creators adapt in their voice):
+"I've been looking for startup ideas without guessing. Found GapList — it pulls
+real problem posts from Reddit (r/SaaS, r/Entrepreneur, etc.). Searched
+[keyword], saved a few threads worth building for. Free beta if you're exploring
+what to build next."
+
+CTA: Link in post or first comment → tracked Naano link
+
+Budget recommendation:
+- Top up ~€200 wallet
+- Pay per qualified click (~€2.40), NOT flat-fee posts (€100+ each)
+- Accept 3–5 creators in: founders, SaaS, indie hacker, build-in-public niches
+- Do NOT accept creators whose audience is consumer/fitness/generic motivation
+
+Success metrics:
+- Qualified clicks
+- Did they use Search?
+- Saves to Solutions tab
+
+
+================================================================================
+STEP 4 — REDDIT ADS (optional second paid test, ~$200)
+================================================================================
+
+Platform: Reddit Ads (ads.reddit.com)
+Objective: Traffic
+Target: r/Entrepreneur, r/startups, r/SaaS, r/indiehackers
+Budget: $10/day for 20 days
+URL: YOUR_URL?utm_source=reddit&utm_medium=paid&utm_campaign=launch-v1
+
+Ad copy:
+Title: Find startup ideas from real Reddit problems
+Body: GapList scans founder complaint threads so you can search, save, and build
+from pain people already talk about. Free beta.
