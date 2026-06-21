@@ -6,6 +6,7 @@ import { FeedList } from "./FeedList";
 import { HomePanel } from "./HomePanel";
 import { ProblemsToggle, type ProblemsMode } from "./ProblemsToggle";
 import { PlatformPanel } from "./PlatformPanel";
+import { PricingPanel } from "./PricingPanel";
 import { ScoutPanel } from "./ScoutPanel";
 import { SiteHeader } from "./SiteHeader";
 import { BetaBanner } from "./BetaBanner";
@@ -139,6 +140,8 @@ export function HomeDashboard({
             onBrowseProblems={() => goToProblems("search")}
           />
         ) : null}
+
+        {section === "pricing" ? <PricingPanel /> : null}
       </div>
     </>
   );
