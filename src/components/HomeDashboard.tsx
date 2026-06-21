@@ -5,6 +5,7 @@ import type { AppSection } from "./AppNav";
 import { FeedList } from "./FeedList";
 import { HomePanel } from "./HomePanel";
 import { ProblemsToggle, type ProblemsMode } from "./ProblemsToggle";
+import { PlatformPanel } from "./PlatformPanel";
 import { ScoutPanel } from "./ScoutPanel";
 import { SiteHeader } from "./SiteHeader";
 import { BetaBanner } from "./BetaBanner";
@@ -120,9 +121,13 @@ export function HomeDashboard({
             <ProblemsToggle mode={problemsMode} onChange={setProblemsMode} />
             {problemsMode === "search" ? (
               <FeedList posts={posts} savedIds={savedIds} onToggleSave={toggleSave} />
-            ) : (
+            ) : null}
+            {problemsMode === "ask-ai" ? (
               <ScoutPanel savedIds={savedIds} onToggleSave={toggleSave} />
-            )}
+            ) : null}
+            {problemsMode === "platform" ? (
+              <PlatformPanel posts={posts} savedIds={savedIds} onToggleSave={toggleSave} />
+            ) : null}
           </>
         ) : null}
 

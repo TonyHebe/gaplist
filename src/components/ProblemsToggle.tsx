@@ -1,6 +1,6 @@
 "use client";
 
-export type ProblemsMode = "search" | "ask-ai";
+export type ProblemsMode = "search" | "ask-ai" | "platform";
 
 type ProblemsToggleProps = {
   mode: ProblemsMode;
@@ -27,6 +27,15 @@ export function ProblemsToggle({ mode, onChange }: ProblemsToggleProps) {
         }`}
       >
         Ask AI
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange("platform")}
+        className={`rounded-xl px-5 py-2 text-sm font-medium transition ${
+          mode === "platform" ? "bg-white text-zinc-900 shadow-sm" : "text-zinc-600 hover:text-zinc-900"
+        }`}
+      >
+        Platform
       </button>
     </div>
   );
