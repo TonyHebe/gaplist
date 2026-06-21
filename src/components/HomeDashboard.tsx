@@ -100,7 +100,7 @@ export function HomeDashboard({
       <BetaBanner />
       <SiteHeader active={section} onNavigate={setSection} />
 
-      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         {!saveReady ? <SaveSetupBanner supabaseUrl={supabaseUrl} /> : null}
         {saveError ? (
           <p className="mb-6 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{saveError}</p>

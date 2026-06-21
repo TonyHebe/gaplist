@@ -11,7 +11,7 @@ type PostCardProps = {
 
 export function PostCard({ post, isSaved = false, onToggleSave }: PostCardProps) {
   return (
-    <article className="group rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:border-orange-300 hover:shadow-md">
+    <article className="group flex flex-col rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:border-orange-300 hover:shadow-md">
       {/* Top row: source + category + pain score + save */}
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -71,7 +71,7 @@ export function PostCard({ post, isSaved = false, onToggleSave }: PostCardProps)
       </p>
 
       {/* Title */}
-      <h2 className="mb-2 text-base font-semibold leading-snug text-zinc-900 group-hover:text-orange-700">
+      <h2 className="mb-2 line-clamp-2 text-base font-semibold leading-snug text-zinc-900 group-hover:text-orange-700">
         <a href={post.permalink} target="_blank" rel="noopener noreferrer">
           {post.title}
         </a>
@@ -79,11 +79,11 @@ export function PostCard({ post, isSaved = false, onToggleSave }: PostCardProps)
 
       {/* Snippet */}
       {post.snippet ? (
-        <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-zinc-500">{post.snippet}</p>
+        <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-zinc-500">{post.snippet}</p>
       ) : null}
 
-      {/* Footer */}
-      <div className="flex items-center justify-between gap-2">
+      {/* Footer — pushed to bottom */}
+      <div className="mt-auto flex items-center justify-between gap-2">
         <span className="text-xs text-zinc-400">Reddit · {post.subreddit}</span>
         <a
           href={post.permalink}
