@@ -49,7 +49,7 @@ export function SolutionsPanel({
           </button>
         </div>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 md:grid-cols-3">
           {savedPosts.map((post) => (
             <PostCard
               key={post.id}

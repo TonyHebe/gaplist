@@ -86,7 +86,7 @@ export function HomePanel({
           <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">
             Latest problems
           </h3>
-          <div className="grid gap-4">
+          <div className="grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 md:grid-cols-3">
             {recent.map((post) => (
               <PostCard
                 key={post.id}
