@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { SUBREDDITS } from "@/lib/constants";
+import { CATEGORIES, SUBREDDITS } from "@/lib/constants";
 import { PLATFORMS, type PlatformId } from "@/lib/platforms";
 import type { GapPost } from "@/lib/types";
 import { PostCard } from "./PostCard";
@@ -12,19 +12,49 @@ type PlatformPanelProps = {
   onToggleSave: (postId: string) => void;
 };
 
+type PainFilter = "all" | "high" | "medium" | "low";
+type SortOrder = "newest" | "pain";
+type CategoryFilter = "all" | string;
+
 export function PlatformPanel({ posts, savedIds, onToggleSave }: PlatformPanelProps) {
   const [platform, setPlatform] = useState<PlatformId>("reddit");
   const [subreddit, setSubreddit] = useState<string>("all");
+  const [painFilter, setPainFilter] = useState<PainFilter>("all");
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
 
   const activePlatform = PLATFORMS.find((item) => item.id === platform)!;
   const isLive = activePlatform.status === "live";
 
-  const filteredPosts = useMemo(() => {
-    if (!isLive || subreddit === "all") return posts;
-    return posts.filter(
-      (post) => post.subreddit.toLowerCase() === subreddit.toLowerCase(),
-    );
-  }, [posts, subreddit, isLive]);
+  const filteredSorted = useMemo(() => {
+    let result = posts;
+
+    // Subreddit filter
+    if (isLive && subreddit !== "all") {
+      result = result.filter(
+        (post) => post.subreddit.toLowerCase() === subreddit.toLowerCase(),
+      );
+    }
+
+    // Pain filter
+    if (painFilter === "high") result = result.filter((p) => p.pain_score !== null && p.pain_score >= 8);
+    else if (painFilter === "medium") result = result.filter((p) => p.pain_score !== null && p.pain_score >= 5 && p.pain_score < 8);
+    else if (painFilter === "low") result = result.filter((p) => p.pain_score !== null && p.pain_score < 5);
+
+    // Category filter
+    if (categoryFilter !== "all") result = result.filter((p) => p.category === categoryFilter);
+
+    // Sort
+    if (sortOrder === "pain") {
+      result = [...result].sort((a, b) => (b.pain_score ?? 0) - (a.pain_score ?? 0));
+    } else {
+      result = [...result].sort(
+        (a, b) => new Date(b.created_utc).getTime() - new Date(a.created_utc).getTime(),
+      );
+    }
+
+    return result;
+  }, [posts, subreddit, isLive, painFilter, categoryFilter, sortOrder]);
 
   return (
     <div className="space-y-6">
@@ -78,6 +108,7 @@ export function PlatformPanel({ posts, savedIds, onToggleSave }: PlatformPanelPr
 
       {isLive ? (
         <>
+          {/* Subreddit picker */}
           <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
             <p className="mb-3 text-sm font-medium text-zinc-700">Subreddits on Reddit</p>
             <div className="flex flex-wrap gap-2">
@@ -108,21 +139,64 @@ export function PlatformPanel({ posts, savedIds, onToggleSave }: PlatformPanelPr
               ))}
             </div>
             <p className="mt-3 text-sm text-zinc-500">
-              Showing {filteredPosts.length} of {posts.length} problems
+              Showing {filteredSorted.length} of {posts.length} problems
               {subreddit !== "all" ? ` from r/${subreddit}` : " from Reddit"}
             </p>
           </div>
 
-          {filteredPosts.length === 0 ? (
+          {/* Quick filter bar */}
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Pain level */}
+            <div className="flex items-center gap-1 rounded-xl border border-zinc-200 bg-white p-1">
+              {(["all", "high", "medium", "low"] as PainFilter[]).map((level) => (
+                <button
+                  key={level}
+                  type="button"
+                  onClick={() => setPainFilter(level)}
+                  className={`rounded-lg px-3 py-1 text-xs font-medium transition ${
+                    painFilter === level
+                      ? "bg-zinc-900 text-white"
+                      : "text-zinc-500 hover:text-zinc-900"
+                  }`}
+                >
+                  {level === "all" ? "All pain" : level.charAt(0).toUpperCase() + level.slice(1)}
+                </button>
+              ))}
+            </div>
+
+            {/* Category */}
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs font-medium text-zinc-700 outline-none focus:border-orange-300"
+            >
+              <option value="all">All categories</option>
+              {CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+
+            {/* Sort */}
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as SortOrder)}
+              className="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs font-medium text-zinc-700 outline-none focus:border-orange-300"
+            >
+              <option value="newest">Newest first</option>
+              <option value="pain">Highest pain</option>
+            </select>
+          </div>
+
+          {filteredSorted.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-8 text-center">
-              <h2 className="text-lg font-semibold text-zinc-900">No problems in this subreddit yet</h2>
+              <h2 className="text-lg font-semibold text-zinc-900">No problems match these filters</h2>
               <p className="mt-2 text-sm text-zinc-600">
-                Try <strong>All</strong> or another community. The daily fetch adds fresh posts.
+                Try changing the filters above or selecting a different subreddit.
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 md:grid-cols-3">
-              {filteredPosts.map((post) => (
+              {filteredSorted.map((post) => (
                 <PostCard
                   key={post.id}
                   post={post}
