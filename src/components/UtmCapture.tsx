@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-const STORAGE_KEY = "gaplist_utm";
+const STORAGE_KEY = "trueideas_utm";
 
 type UtmParams = {
   utm_source?: string;

@@ -149,7 +149,7 @@ export function ScoutPanel({ savedIds, onToggleSave }: ScoutPanelProps) {
               {analysis.watch_out || "Validate demand before building. AI summarizes public posts, not market size."}
             </p>
             <p className="mt-4 text-xs text-zinc-500">
-              Ask AI uses your saved GapList posts only. Run fetch to refresh the dataset.
+              Ask AI uses your saved TrueIdeas posts only. Run fetch to refresh the dataset.
             </p>
           </aside>
         </div>
@@ -160,7 +160,7 @@ export function ScoutPanel({ savedIds, onToggleSave }: ScoutPanelProps) {
           <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">
             Source posts cited
           </h3>
-          <div className="grid gap-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {citedPosts.map((post) => (
               <PostCard
                 key={post.id}

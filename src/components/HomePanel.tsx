@@ -46,7 +46,7 @@ export function HomePanel({
       <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
         <h2 className="text-xl font-semibold text-zinc-900">Stop guessing what to build</h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-600">
-          GapList pulls public Reddit posts where founders describe real frustrations and unmet needs.
+          TrueIdeas pulls public Reddit posts where founders describe real frustrations and unmet needs.
           Search by keyword or subreddit, bookmark the best threads, and build from pain people already
           expressed.
         </p>

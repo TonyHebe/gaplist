@@ -60,7 +60,7 @@ export default async function HomePage() {
         supabaseUrl={process.env.NEXT_PUBLIC_SUPABASE_URL}
       />
       <footer className="mx-auto max-w-5xl px-4 pb-10 pt-4 text-center text-xs text-zinc-500 sm:px-6">
-        GapList is read-only. Every card links back to the original Reddit post.
+        TrueIdeas is read-only. Every card links back to the original Reddit post.
       </footer>
     </main>
   );
