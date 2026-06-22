@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 const features = [
   "Unlimited problem searches",
   "Save unlimited threads to Solutions",
@@ -11,6 +13,22 @@ const features = [
 ];
 
 export function PricingPanel() {
+  const [loading, setLoading] = useState(false);
+
+  const handleCheckout = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/checkout", { method: "POST" });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -45,9 +63,11 @@ export function PricingPanel() {
           {/* CTA */}
           <button
             type="button"
-            className="mb-6 w-full rounded-xl bg-orange-600 py-3 text-sm font-semibold text-white transition hover:bg-orange-700"
+            onClick={handleCheckout}
+            disabled={loading}
+            className="mb-6 w-full rounded-xl bg-orange-600 py-3 text-sm font-semibold text-white transition hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Start free trial
+            {loading ? "Redirecting…" : "Start free trial"}
           </button>
 
           {/* Features list */}
