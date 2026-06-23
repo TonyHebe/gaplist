@@ -46,3 +46,15 @@ export type TagResult = {
   pain_score: number;
   summary: string;
 };
+
+export type AIIdea = {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  confidence: number;
+  signals_count: number;
+  tags: string[];
+  source_post_ids: string[];
+  created_at: string;
+};
