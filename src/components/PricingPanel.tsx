@@ -14,17 +14,30 @@ const features = [
 
 export function PricingPanel() {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleCheckout = async () => {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch("/api/checkout", { method: "POST" });
       const data = await res.json();
+      
+      if (!res.ok) {
+        setError(data.error || "Something went wrong");
+        setLoading(false);
+        return;
+      }
+      
       if (data.url) {
         window.location.href = data.url;
+      } else {
+        setError("No checkout URL returned");
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Checkout error:", error);
+    } catch (err) {
+      console.error("Checkout error:", err);
+      setError("Failed to connect to payment server");
       setLoading(false);
     }
   };
@@ -65,10 +78,14 @@ export function PricingPanel() {
             type="button"
             onClick={handleCheckout}
             disabled={loading}
-            className="mb-6 w-full rounded-xl bg-orange-600 py-3 text-sm font-semibold text-white transition hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="mb-4 w-full rounded-xl bg-orange-600 py-3 text-sm font-semibold text-white transition hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Redirecting…" : "Start free trial"}
           </button>
+          
+          {error && (
+            <p className="mb-4 text-center text-sm text-red-600">{error}</p>
+          )}
 
           {/* Features list */}
           <ul className="space-y-3">

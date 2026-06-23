@@ -7,6 +7,20 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: Request) {
   try {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        { error: "Stripe is not configured" },
+        { status: 500 }
+      );
+    }
+    
+    if (!process.env.STRIPE_PRICE_ID) {
+      return NextResponse.json(
+        { error: "Price ID is not configured" },
+        { status: 500 }
+      );
+    }
+
     const { origin } = new URL(request.url);
 
     const session = await stripe.checkout.sessions.create({
@@ -14,7 +28,7 @@ export async function POST(request: Request) {
       payment_method_types: ["card"],
       line_items: [
         {
-          price: process.env.STRIPE_PRICE_ID!,
+          price: process.env.STRIPE_PRICE_ID,
           quantity: 1,
         },
       ],
@@ -28,8 +42,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ url: session.url });
   } catch (error) {
     console.error("Stripe checkout error:", error);
+    const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { error: "Failed to create checkout session" },
+      { error: `Checkout failed: ${message}` },
       { status: 500 }
     );
   }
