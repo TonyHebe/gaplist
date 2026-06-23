@@ -32,9 +32,6 @@ export async function POST(request: Request) {
           quantity: 1,
         },
       ],
-      subscription_data: {
-        trial_period_days: 7,
-      },
       success_url: `${origin}/?checkout=success`,
       cancel_url: `${origin}/?checkout=canceled`,
     });

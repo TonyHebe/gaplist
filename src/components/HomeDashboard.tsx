@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { AppSection } from "./AppNav";
 import { FeedList } from "./FeedList";
 import { HomePanel } from "./HomePanel";
@@ -12,6 +12,7 @@ import { SiteHeader } from "./SiteHeader";
 import { BetaBanner } from "./BetaBanner";
 import { SaveSetupBanner } from "./SaveSetupBanner";
 import { SolutionsPanel } from "./SolutionsPanel";
+import { UpgradeModal } from "./UpgradeModal";
 import type { GapPost } from "@/lib/types";
 
 type HomeDashboardProps = {
@@ -34,13 +35,33 @@ export function HomeDashboard({
     () => new Set(initialPosts.filter((post) => post.saved).map((post) => post.id)),
   );
   const [saveError, setSaveError] = useState<string | null>(null);
+  
+  const [upgradeModal, setUpgradeModal] = useState<"save" | "ask-ai" | null>(null);
+  const [pendingSaveId, setPendingSaveId] = useState<string | null>(null);
+  const [shownUpgradeFor, setShownUpgradeFor] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const stored = localStorage.getItem("trueideas_upgrade_shown");
+    if (stored) {
+      setShownUpgradeFor(new Set(JSON.parse(stored)));
+    }
+  }, []);
 
   function goToProblems(mode: ProblemsMode = "search") {
     setSection("problems");
     setProblemsMode(mode);
   }
 
-  const toggleSave = useCallback(async (postId: string) => {
+  const markUpgradeShown = useCallback((feature: string) => {
+    setShownUpgradeFor((current) => {
+      const updated = new Set(current);
+      updated.add(feature);
+      localStorage.setItem("trueideas_upgrade_shown", JSON.stringify([...updated]));
+      return updated;
+    });
+  }, []);
+
+  const performSave = useCallback(async (postId: string) => {
     if (!saveReady) {
       setSaveError("Run the database migration first (see banner above).");
       return;
@@ -96,6 +117,53 @@ export function HomeDashboard({
     }
   }, [savedIds, saveReady]);
 
+  const toggleSave = useCallback((postId: string) => {
+    const isUnsaving = savedIds.has(postId);
+    
+    if (isUnsaving) {
+      performSave(postId);
+      return;
+    }
+
+    if (!shownUpgradeFor.has("save")) {
+      setPendingSaveId(postId);
+      setUpgradeModal("save");
+      return;
+    }
+
+    performSave(postId);
+  }, [savedIds, shownUpgradeFor, performSave]);
+
+  const handleUpgradeClose = useCallback(() => {
+    setUpgradeModal(null);
+    setPendingSaveId(null);
+  }, []);
+
+  const handleContinueFree = useCallback(() => {
+    if (upgradeModal) {
+      markUpgradeShown(upgradeModal);
+    }
+    if (pendingSaveId) {
+      performSave(pendingSaveId);
+    }
+    setUpgradeModal(null);
+    setPendingSaveId(null);
+  }, [upgradeModal, pendingSaveId, markUpgradeShown, performSave]);
+
+  const handleAskAiContinue = useCallback(() => {
+    markUpgradeShown("ask-ai");
+    setUpgradeModal(null);
+    setProblemsMode("ask-ai");
+  }, [markUpgradeShown]);
+
+  const handleProblemsModeChange = useCallback((mode: ProblemsMode) => {
+    if (mode === "ask-ai" && !shownUpgradeFor.has("ask-ai")) {
+      setUpgradeModal("ask-ai");
+      return;
+    }
+    setProblemsMode(mode);
+  }, [shownUpgradeFor]);
+
   return (
     <>
       <BetaBanner />
@@ -119,7 +187,7 @@ export function HomeDashboard({
 
         {section === "problems" ? (
           <>
-            <ProblemsToggle mode={problemsMode} onChange={setProblemsMode} />
+            <ProblemsToggle mode={problemsMode} onChange={handleProblemsModeChange} />
             {problemsMode === "search" ? (
               <FeedList posts={posts} savedIds={savedIds} onToggleSave={toggleSave} />
             ) : null}
@@ -143,6 +211,14 @@ export function HomeDashboard({
 
         {section === "pricing" ? <PricingPanel /> : null}
       </div>
+
+      {upgradeModal ? (
+        <UpgradeModal
+          feature={upgradeModal}
+          onClose={handleUpgradeClose}
+          onContinueFree={upgradeModal === "ask-ai" ? handleAskAiContinue : handleContinueFree}
+        />
+      ) : null}
     </>
   );
 }
