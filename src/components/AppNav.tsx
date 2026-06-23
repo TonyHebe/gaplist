@@ -1,6 +1,6 @@
 "use client";
 
-export type AppSection = "home" | "problems" | "solutions" | "pricing";
+export type AppSection = "home" | "problems" | "ideas" | "pricing";
 
 type AppNavProps = {
   active: AppSection;
@@ -10,7 +10,7 @@ type AppNavProps = {
 const sections: { id: AppSection; label: string }[] = [
   { id: "home", label: "Home" },
   { id: "problems", label: "Problems" },
-  { id: "solutions", label: "Solutions" },
+  { id: "ideas", label: "Ideas" },
   { id: "pricing", label: "Pricing" },
 ];
 

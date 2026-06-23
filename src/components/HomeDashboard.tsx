@@ -2,12 +2,15 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { AppSection } from "./AppNav";
+import { AIIdeasPanel } from "./AIIdeasPanel";
 import { FeedList } from "./FeedList";
 import { HomePanel } from "./HomePanel";
+import { IdeasToggle, type IdeasMode } from "./IdeasToggle";
 import { ProblemsToggle, type ProblemsMode } from "./ProblemsToggle";
 import { PlatformPanel } from "./PlatformPanel";
 import { PricingPanel } from "./PricingPanel";
 import { ScoutPanel } from "./ScoutPanel";
+import { ScrapedPanel } from "./ScrapedPanel";
 import { SiteHeader } from "./SiteHeader";
 import { BetaBanner } from "./BetaBanner";
 import { SaveSetupBanner } from "./SaveSetupBanner";
@@ -30,6 +33,7 @@ export function HomeDashboard({
 }: HomeDashboardProps) {
   const [section, setSection] = useState<AppSection>("home");
   const [problemsMode, setProblemsMode] = useState<ProblemsMode>("search");
+  const [ideasMode, setIdeasMode] = useState<IdeasMode>("solutions");
   const [posts, setPosts] = useState(initialPosts);
   const [savedIds, setSavedIds] = useState(
     () => new Set(initialPosts.filter((post) => post.saved).map((post) => post.id)),
@@ -181,7 +185,7 @@ export function HomeDashboard({
             savedIds={savedIds}
             onToggleSave={toggleSave}
             onBrowseProblems={() => goToProblems("search")}
-            onViewSolutions={() => setSection("solutions")}
+            onViewSolutions={() => setSection("ideas")}
           />
         ) : null}
 
@@ -200,13 +204,20 @@ export function HomeDashboard({
           </>
         ) : null}
 
-        {section === "solutions" ? (
-          <SolutionsPanel
-            posts={posts}
-            savedIds={savedIds}
-            onToggleSave={toggleSave}
-            onBrowseProblems={() => goToProblems("search")}
-          />
+        {section === "ideas" ? (
+          <>
+            <IdeasToggle mode={ideasMode} onChange={setIdeasMode} />
+            {ideasMode === "solutions" ? (
+              <SolutionsPanel
+                posts={posts}
+                savedIds={savedIds}
+                onToggleSave={toggleSave}
+                onBrowseProblems={() => goToProblems("search")}
+              />
+            ) : null}
+            {ideasMode === "scraped" ? <ScrapedPanel /> : null}
+            {ideasMode === "ai-ideas" ? <AIIdeasPanel /> : null}
+          </>
         ) : null}
 
         {section === "pricing" ? <PricingPanel /> : null}
