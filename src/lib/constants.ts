@@ -11,6 +11,17 @@ export const SUBREDDITS = [
   "freelance",
 ] as const;
 
+export const IDEA_SUBREDDITS = [
+  "SideProject",
+  "indiehackers",
+  "startups",
+  "Entrepreneur",
+  "IMadeThis",
+  "InternetIsBeautiful",
+  "coolgithubprojects",
+  "webdev",
+] as const;
+
 import { PROBLEM_SIGNALS } from "./problem-signals";
 
 export { PROBLEM_SIGNALS };

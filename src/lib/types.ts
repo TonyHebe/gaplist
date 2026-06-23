@@ -58,3 +58,17 @@ export type AIIdea = {
   source_post_ids: string[];
   created_at: string;
 };
+
+export type ScrapedIdea = {
+  id: string;
+  title: string;
+  description: string | null;
+  subreddit: string;
+  permalink: string;
+  author: string;
+  upvotes: number;
+  comments_count: number;
+  tags: string[];
+  created_utc: string;
+  fetched_at: string;
+};
