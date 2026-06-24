@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { SUBREDDITS } from "@/lib/constants";
 import type { GapPost } from "@/lib/types";
+import { useAuth } from "@/lib/auth-context";
 import { PostCard } from "./PostCard";
 
 type HomePanelProps = {
@@ -23,6 +25,7 @@ export function HomePanel({
   onViewSolutions,
   onPostClick,
 }: HomePanelProps) {
+  const { user, loading } = useAuth();
   const recent = posts.slice(0, 3);
 
   return (
@@ -66,20 +69,39 @@ export function HomePanel({
           </li>
         </ol>
         <div className="mt-5 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={onBrowseProblems}
-            className="rounded-xl bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700"
-          >
-            Try it free — browse problems
-          </button>
-          <button
-            type="button"
-            onClick={onViewSolutions}
-            className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-800 hover:border-orange-300"
-          >
-            View solutions
-          </button>
+          {!loading && !user ? (
+            <>
+              <Link
+                href="/auth/signin"
+                className="rounded-xl bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700"
+              >
+                Sign in to start
+              </Link>
+              <Link
+                href="/auth/signup"
+                className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-800 hover:border-orange-300"
+              >
+                Create free account
+              </Link>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={onBrowseProblems}
+                className="rounded-xl bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700"
+              >
+                Browse problems
+              </button>
+              <button
+                type="button"
+                onClick={onViewSolutions}
+                className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-800 hover:border-orange-300"
+              >
+                View ideas
+              </button>
+            </>
+          )}
         </div>
       </div>
 

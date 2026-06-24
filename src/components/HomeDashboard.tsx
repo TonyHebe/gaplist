@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { AppSection } from "./AppNav";
 import { AIIdeasPanel } from "./AIIdeasPanel";
+import { AuthGate } from "./AuthGate";
 import { FeedList } from "./FeedList";
 import { HomePanel } from "./HomePanel";
 import { IdeasToggle, type IdeasMode } from "./IdeasToggle";
@@ -193,7 +194,7 @@ export function HomeDashboard({
         ) : null}
 
         {section === "problems" ? (
-          <>
+          <AuthGate>
             <ProblemsToggle mode={problemsMode} onChange={handleProblemsModeChange} />
             {problemsMode === "search" ? (
               <FeedList posts={posts} savedIds={savedIds} onToggleSave={toggleSave} onPostClick={setSelectedPost} />
@@ -204,11 +205,11 @@ export function HomeDashboard({
             {problemsMode === "platform" ? (
               <PlatformPanel posts={posts} savedIds={savedIds} onToggleSave={toggleSave} onPostClick={setSelectedPost} />
             ) : null}
-          </>
+          </AuthGate>
         ) : null}
 
         {section === "ideas" ? (
-          <>
+          <AuthGate>
             <IdeasToggle mode={ideasMode} onChange={setIdeasMode} />
             {ideasMode === "solutions" ? (
               <SolutionsPanel
@@ -221,7 +222,7 @@ export function HomeDashboard({
             ) : null}
             {ideasMode === "scraped" ? <ScrapedPanel /> : null}
             {ideasMode === "ai-ideas" ? <AIIdeasPanel /> : null}
-          </>
+          </AuthGate>
         ) : null}
 
         {section === "pricing" ? <PricingPanel /> : null}

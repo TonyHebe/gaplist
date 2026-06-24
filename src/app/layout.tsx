@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { UtmCapture } from "@/components/UtmCapture";
+import { AuthProvider } from "@/lib/auth-context";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://findtrueideas.com";
@@ -33,8 +34,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <UtmCapture />
-        {children}
+        <AuthProvider>
+          <UtmCapture />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
