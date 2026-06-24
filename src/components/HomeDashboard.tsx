@@ -8,6 +8,7 @@ import { HomePanel } from "./HomePanel";
 import { IdeasToggle, type IdeasMode } from "./IdeasToggle";
 import { ProblemsToggle, type ProblemsMode } from "./ProblemsToggle";
 import { PlatformPanel } from "./PlatformPanel";
+import { PostDetailModal } from "./PostDetailModal";
 import { PricingPanel } from "./PricingPanel";
 import { ScoutPanel } from "./ScoutPanel";
 import { ScrapedPanel } from "./ScrapedPanel";
@@ -43,6 +44,7 @@ export function HomeDashboard({
   const [upgradeModal, setUpgradeModal] = useState<"save" | "ask-ai" | null>(null);
   const [pendingSaveId, setPendingSaveId] = useState<string | null>(null);
   const [shownUpgradeFor, setShownUpgradeFor] = useState<Set<string>>(new Set());
+  const [selectedPost, setSelectedPost] = useState<GapPost | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("trueideas_upgrade_shown");
@@ -186,6 +188,7 @@ export function HomeDashboard({
             onToggleSave={toggleSave}
             onBrowseProblems={() => goToProblems("search")}
             onViewSolutions={() => setSection("ideas")}
+            onPostClick={setSelectedPost}
           />
         ) : null}
 
@@ -193,13 +196,13 @@ export function HomeDashboard({
           <>
             <ProblemsToggle mode={problemsMode} onChange={handleProblemsModeChange} />
             {problemsMode === "search" ? (
-              <FeedList posts={posts} savedIds={savedIds} onToggleSave={toggleSave} />
+              <FeedList posts={posts} savedIds={savedIds} onToggleSave={toggleSave} onPostClick={setSelectedPost} />
             ) : null}
             {problemsMode === "ask-ai" ? (
               <ScoutPanel savedIds={savedIds} onToggleSave={toggleSave} />
             ) : null}
             {problemsMode === "platform" ? (
-              <PlatformPanel posts={posts} savedIds={savedIds} onToggleSave={toggleSave} />
+              <PlatformPanel posts={posts} savedIds={savedIds} onToggleSave={toggleSave} onPostClick={setSelectedPost} />
             ) : null}
           </>
         ) : null}
@@ -213,6 +216,7 @@ export function HomeDashboard({
                 savedIds={savedIds}
                 onToggleSave={toggleSave}
                 onBrowseProblems={() => goToProblems("search")}
+                onPostClick={setSelectedPost}
               />
             ) : null}
             {ideasMode === "scraped" ? <ScrapedPanel /> : null}
@@ -229,6 +233,10 @@ export function HomeDashboard({
           onClose={handleUpgradeClose}
           onContinueFree={upgradeModal === "ask-ai" ? handleAskAiContinue : handleContinueFree}
         />
+      ) : null}
+
+      {selectedPost ? (
+        <PostDetailModal post={selectedPost} onClose={() => setSelectedPost(null)} />
       ) : null}
     </>
   );

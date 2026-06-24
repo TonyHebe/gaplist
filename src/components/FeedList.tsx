@@ -14,6 +14,7 @@ type FeedListProps = {
   posts: GapPost[];
   savedIds: Set<string>;
   onToggleSave: (postId: string) => void;
+  onPostClick?: (post: GapPost) => void;
 };
 const SEARCH_TIMEOUT_MS = 20_000;
 
@@ -46,7 +47,7 @@ async function runSearch(mode: FilterMode, query: string) {
   }
 }
 
-export function FeedList({ posts, savedIds, onToggleSave }: FeedListProps) {
+export function FeedList({ posts, savedIds, onToggleSave, onPostClick }: FeedListProps) {
   const [mode, setMode] = useState<FilterMode>("subreddit");
   const [value, setValue] = useState("");
   const [appliedValue, setAppliedValue] = useState("");
@@ -232,6 +233,7 @@ export function FeedList({ posts, savedIds, onToggleSave }: FeedListProps) {
               post={post}
               isSaved={savedIds.has(post.id)}
               onToggleSave={onToggleSave}
+              onClick={onPostClick ? () => onPostClick(post) : undefined}
             />
           ))}
         </div>

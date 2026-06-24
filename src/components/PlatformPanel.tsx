@@ -10,13 +10,14 @@ type PlatformPanelProps = {
   posts: GapPost[];
   savedIds: Set<string>;
   onToggleSave: (postId: string) => void;
+  onPostClick?: (post: GapPost) => void;
 };
 
 type PainFilter = "all" | "high" | "medium" | "low";
 type SortOrder = "newest" | "pain";
 type CategoryFilter = "all" | string;
 
-export function PlatformPanel({ posts, savedIds, onToggleSave }: PlatformPanelProps) {
+export function PlatformPanel({ posts, savedIds, onToggleSave, onPostClick }: PlatformPanelProps) {
   const [platform, setPlatform] = useState<PlatformId>("reddit");
   const [subreddit, setSubreddit] = useState<string>("all");
   const [painFilter, setPainFilter] = useState<PainFilter>("all");
@@ -202,6 +203,7 @@ export function PlatformPanel({ posts, savedIds, onToggleSave }: PlatformPanelPr
                   post={post}
                   isSaved={savedIds.has(post.id)}
                   onToggleSave={onToggleSave}
+                  onClick={onPostClick ? () => onPostClick(post) : undefined}
                 />
               ))}
             </div>

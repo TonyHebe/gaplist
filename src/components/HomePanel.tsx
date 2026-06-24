@@ -11,6 +11,7 @@ type HomePanelProps = {
   onToggleSave: (postId: string) => void;
   onBrowseProblems: () => void;
   onViewSolutions: () => void;
+  onPostClick?: (post: GapPost) => void;
 };
 
 export function HomePanel({
@@ -20,6 +21,7 @@ export function HomePanel({
   onToggleSave,
   onBrowseProblems,
   onViewSolutions,
+  onPostClick,
 }: HomePanelProps) {
   const recent = posts.slice(0, 3);
 
@@ -93,6 +95,7 @@ export function HomePanel({
                 post={post}
                 isSaved={savedIds.has(post.id)}
                 onToggleSave={onToggleSave}
+                onClick={onPostClick ? () => onPostClick(post) : undefined}
               />
             ))}
           </div>

@@ -8,6 +8,7 @@ type SolutionsPanelProps = {
   savedIds: Set<string>;
   onToggleSave: (postId: string) => void;
   onBrowseProblems: () => void;
+  onPostClick?: (post: GapPost) => void;
 };
 
 export function SolutionsPanel({
@@ -15,6 +16,7 @@ export function SolutionsPanel({
   savedIds,
   onToggleSave,
   onBrowseProblems,
+  onPostClick,
 }: SolutionsPanelProps) {
   const savedPosts = posts
     .filter((post) => savedIds.has(post.id))
@@ -56,6 +58,7 @@ export function SolutionsPanel({
               post={post}
               isSaved={savedIds.has(post.id)}
               onToggleSave={onToggleSave}
+              onClick={onPostClick ? () => onPostClick(post) : undefined}
             />
           ))}
         </div>

@@ -7,6 +7,7 @@ type PostCardProps = {
   post: GapPost;
   isSaved?: boolean;
   onToggleSave?: (postId: string) => void;
+  onClick?: () => void;
 };
 
 function formatDate(iso: string): string {
@@ -14,11 +15,14 @@ function formatDate(iso: string): string {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-export function PostCard({ post, isSaved = false, onToggleSave }: PostCardProps) {
+export function PostCard({ post, isSaved = false, onToggleSave, onClick }: PostCardProps) {
   const tags = extractTags(`${post.title} ${post.snippet ?? ""}`, 3);
 
   return (
-    <article className="group flex h-full flex-col rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:border-orange-300 hover:shadow-md">
+    <article
+      className={`group flex h-full flex-col rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:border-orange-300 hover:shadow-md ${onClick ? "cursor-pointer" : ""}`}
+      onClick={onClick}
+    >
       {/* Top row: category badge (left) + score (right) */}
       <div className="mb-3 flex items-center justify-between gap-2">
         <span
@@ -41,9 +45,7 @@ export function PostCard({ post, isSaved = false, onToggleSave }: PostCardProps)
 
       {/* Title */}
       <h2 className="mb-1.5 line-clamp-2 text-base font-bold leading-snug text-zinc-900 group-hover:text-orange-700">
-        <a href={post.permalink} target="_blank" rel="noopener noreferrer">
-          {post.title}
-        </a>
+        {post.title}
       </h2>
 
       {/* Description */}
@@ -75,7 +77,10 @@ export function PostCard({ post, isSaved = false, onToggleSave }: PostCardProps)
           {onToggleSave ? (
             <button
               type="button"
-              onClick={() => onToggleSave(post.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleSave(post.id);
+              }}
               className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
                 isSaved
                   ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
@@ -89,6 +94,7 @@ export function PostCard({ post, isSaved = false, onToggleSave }: PostCardProps)
             href={post.permalink}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
             className="text-xs font-medium text-orange-600 hover:text-orange-700"
           >
             View →
