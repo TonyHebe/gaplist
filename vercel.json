@@ -3,6 +3,14 @@
     {
       "path": "/api/cron/fetch",
       "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/scraped-ideas/fetch",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/ai-ideas/generate",
+      "schedule": "0 10 * * *"
     }
   ]
 }
