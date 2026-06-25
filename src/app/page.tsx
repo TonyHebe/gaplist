@@ -1,5 +1,5 @@
+import { AppShell } from "@/components/AppShell";
 import { EmptyState } from "@/components/EmptyState";
-import { HomeDashboard } from "@/components/HomeDashboard";
 import { getPostStats, getRecentPosts, isSaveFeatureReady } from "@/lib/supabase";
 import type { GapPost } from "@/lib/types";
 
@@ -47,21 +47,18 @@ export default async function HomePage() {
   }
 
   return (
-    <main className="min-h-screen">
+    <>
       {error ? (
         <div className="mx-auto max-w-5xl px-4 pt-6 sm:px-6">
           <p className="rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>
         </div>
       ) : null}
-      <HomeDashboard
+      <AppShell
         posts={posts}
         total={total}
         saveReady={saveReady}
         supabaseUrl={process.env.NEXT_PUBLIC_SUPABASE_URL}
       />
-      <footer className="mx-auto max-w-5xl px-4 pb-10 pt-4 text-center text-xs text-zinc-500 sm:px-6">
-        TrueIdeas is read-only. Every card links back to the original Reddit post.
-      </footer>
-    </main>
+    </>
   );
 }
