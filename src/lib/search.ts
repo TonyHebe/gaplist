@@ -14,6 +14,7 @@ function toGapPost(post: {
   id: string;
   title: string;
   snippet: string;
+  selftext: string;
   subreddit: string;
   permalink: string;
   created_utc: string;
@@ -118,6 +119,7 @@ export async function searchProblems(mode: SearchMode, query: string) {
       id: post.id,
       title: post.title,
       snippet: post.snippet,
+      selftext: post.selftext,
       subreddit: post.subreddit,
       permalink: post.permalink,
       created_utc: post.created_utc,
@@ -134,6 +136,7 @@ export async function searchProblems(mode: SearchMode, query: string) {
         id: post.id,
         title: post.title,
         snippet: post.snippet,
+        selftext: post.selftext,
         subreddit: post.subreddit,
         permalink: post.permalink,
         created_utc: post.created_utc,
