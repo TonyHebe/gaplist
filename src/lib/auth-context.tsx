@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { User, Session } from "@supabase/supabase-js";
+import { createContext, useContext, useEffect, useRef, useState, ReactNode } from "react";
+import { User, Session, SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "./supabase-browser";
 
 interface AuthUser extends User {
@@ -24,7 +24,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const supabase = createClient();
+  // Keep a stable reference to the supabase client
+  const supabaseRef = useRef<SupabaseClient | null>(null);
+  if (!supabaseRef.current) {
+    supabaseRef.current = createClient();
+  }
+  const supabase = supabaseRef.current;
 
   async function fetchUserData(authUser: User | null) {
     if (!authUser) {
@@ -32,35 +37,60 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const { data: userData } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", authUser.id)
-      .single();
+    try {
+      const { data: userData } = await supabase
+        .from("users")
+        .select("plan, name")
+        .eq("id", authUser.id)
+        .single();
 
-    setUser({
-      ...authUser,
-      plan: userData?.plan ?? "free",
-      displayName: userData?.name ?? authUser.user_metadata?.name ?? authUser.email?.split("@")[0],
-    });
+      setUser({
+        ...authUser,
+        plan: userData?.plan ?? "free",
+        displayName:
+          userData?.name ??
+          authUser.user_metadata?.name ??
+          authUser.user_metadata?.full_name ??
+          authUser.email?.split("@")[0],
+      });
+    } catch {
+      // If the users table query fails, still set the user with defaults
+      setUser({
+        ...authUser,
+        plan: "free",
+        displayName:
+          authUser.user_metadata?.name ??
+          authUser.user_metadata?.full_name ??
+          authUser.email?.split("@")[0],
+      });
+    }
   }
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    let mounted = true;
+
+    // Get initial session
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!mounted) return;
       setSession(session);
-      fetchUserData(session?.user ?? null);
-      setLoading(false);
+      await fetchUserData(session?.user ?? null);
+      if (mounted) setLoading(false);
     });
 
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
+        if (!mounted) return;
         setSession(session);
         await fetchUserData(session?.user ?? null);
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
