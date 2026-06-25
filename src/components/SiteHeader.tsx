@@ -33,7 +33,9 @@ export function SiteHeader({ active, onNavigate }: SiteHeaderProps) {
             <p className="text-sm font-medium uppercase tracking-[0.2em] text-orange-600">
               For founders &amp; indie hackers
             </p>
-            <h1 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">TrueIdeas</h1>
+            <Link href="/">
+              <h1 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl hover:text-orange-600 transition-colors cursor-pointer">TrueIdeas</h1>
+            </Link>
             <p className="mt-2 text-sm leading-relaxed text-zinc-600 sm:text-base">
               Find startup ideas from real Reddit complaints — problems people already talk about.
             </p>
