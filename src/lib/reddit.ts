@@ -7,6 +7,7 @@ export type NormalizedRedditPost = {
   id: string;
   title: string;
   snippet: string;
+  selftext: string;
   subreddit: string;
   permalink: string;
   created_utc: string;
@@ -32,6 +33,7 @@ function normalizePost(input: {
     id: input.id,
     title: input.title,
     snippet: buildSnippet(input.title, input.body),
+    selftext: input.body,
     subreddit: input.subreddit,
     permalink: toPermalink(input.permalink),
     created_utc: input.created_utc,

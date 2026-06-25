@@ -50,6 +50,7 @@ export async function upsertPosts(
     id: string;
     title: string;
     snippet: string;
+    selftext?: string;
     subreddit: string;
     permalink: string;
     created_utc: string;

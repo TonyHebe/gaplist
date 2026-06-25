@@ -15,6 +15,7 @@ export async function runFetchCycle() {
       id: post.id,
       title: post.title,
       snippet: post.snippet,
+      selftext: post.selftext || undefined,
       subreddit: post.subreddit,
       permalink: post.permalink,
       created_utc: post.created_utc,

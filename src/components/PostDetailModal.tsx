@@ -4,6 +4,39 @@ import { useEffect, useState } from "react";
 import type { GapPost } from "@/lib/types";
 import { categoryColor, painColor, painLabel } from "@/lib/utils";
 
+type RawComment = {
+  kind: string;
+  data: {
+    id: string;
+    author: string;
+    body: string;
+    score: number;
+    created_utc: number;
+    replies?: { data?: { children?: RawComment[] } };
+  };
+};
+
+function flattenComments(children: RawComment[], depth = 0, maxDepth = 3): Comment[] {
+  const comments: Comment[] = [];
+  for (const child of children) {
+    if (child.kind !== "t1") continue;
+    const d = child.data;
+    if (!d.body || d.author === "[deleted]") continue;
+    comments.push({
+      id: d.id,
+      author: d.author,
+      body: d.body.slice(0, 1000),
+      score: d.score,
+      created_utc: new Date(d.created_utc * 1000).toISOString(),
+      depth,
+    });
+    if (depth < maxDepth && d.replies?.data?.children) {
+      comments.push(...flattenComments(d.replies.data.children, depth + 1, maxDepth));
+    }
+  }
+  return comments;
+}
+
 type Comment = {
   id: string;
   author: string;
@@ -68,25 +101,45 @@ export function PostDetailModal({ post, onClose }: PostDetailModalProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchComments() {
+    async function fetchFromReddit() {
       try {
-        const res = await fetch(`/api/comments?permalink=${encodeURIComponent(post.permalink)}`);
+        const cleanPermalink = post.permalink
+          .replace("https://reddit.com", "")
+          .replace("https://www.reddit.com", "");
+        const url = `https://www.reddit.com${cleanPermalink.endsWith("/") ? cleanPermalink : cleanPermalink + "/"}.json?limit=50`;
+
+        const res = await fetch(url, {
+          headers: { "Accept": "application/json" },
+        });
+
+        if (!res.ok) throw new Error("Reddit fetch failed");
+
         const data = await res.json();
-        
-        if (data.error) {
-          setError(data.error);
-        } else {
-          setPostDetail(data.post);
-          setComments(data.comments ?? []);
+
+        const postData = data[0]?.data?.children?.[0]?.data;
+        const commentsData = data[1]?.data?.children ?? [];
+
+        if (postData) {
+          setPostDetail({
+            title: postData.title,
+            selftext: postData.selftext || null,
+            author: postData.author,
+            score: postData.ups,
+            num_comments: postData.num_comments,
+            created_utc: new Date(postData.created_utc * 1000).toISOString(),
+          });
         }
+
+        const flat = flattenComments(commentsData).slice(0, 30);
+        setComments(flat);
       } catch (err) {
-        setError("Failed to load comments");
+        setError("Could not load full post");
         console.error(err);
       } finally {
         setLoading(false);
       }
     }
-    fetchComments();
+    fetchFromReddit();
   }, [post.permalink]);
 
   useEffect(() => {
@@ -146,20 +199,11 @@ export function PostDetailModal({ post, onClose }: PostDetailModalProps) {
             )}
           </div>
 
-          {/* Post body — always show what we have from DB */}
-          {post.snippet && (
+          {/* Full post body — from DB selftext, fallback to Reddit fetch, fallback to snippet */}
+          {(post.selftext || postDetail?.selftext || post.snippet) && (
             <div className="mt-4 rounded-xl bg-zinc-50 p-4">
               <p className="text-sm text-zinc-700 whitespace-pre-wrap leading-relaxed">
-                {post.snippet}
-              </p>
-            </div>
-          )}
-
-          {/* Full selftext from Reddit if loaded */}
-          {!loading && !error && postDetail?.selftext && postDetail.selftext !== post.snippet && (
-            <div className="mt-4 rounded-xl bg-zinc-50 p-4">
-              <p className="text-sm text-zinc-700 whitespace-pre-wrap leading-relaxed">
-                {postDetail.selftext}
+                {post.selftext || postDetail?.selftext || post.snippet}
               </p>
             </div>
           )}

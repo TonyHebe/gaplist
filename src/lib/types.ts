@@ -2,6 +2,7 @@ export type GapPost = {
   id: string;
   title: string;
   snippet: string | null;
+  selftext: string | null;
   subreddit: string;
   permalink: string;
   created_utc: string;
